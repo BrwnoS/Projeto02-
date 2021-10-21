@@ -25,8 +25,9 @@ void editar(struct cadastro *cad);
 void Excluir(struct cadastro *cad);
 char* validarSexo(char*sexoValido);
 char* validarEmail(char*emailValido);
-int vacinaValidado(_Bool vacina);
+_Bool vacinaValidado(_Bool vacina);
 double alturaValidada(double altura);
+void ordenacao(struct cadastro *cad);
 
 int j=0;
 
@@ -96,10 +97,10 @@ void Menu(){
 
 struct cadastro incluirUsuario(struct cadastro *cad){
   char repetir, tamanhoEmail[30], vacinado[5];
-
+  ordenacao(cad);
   if (cad[0].id < 0) {
     cad[0].id = (cad[0].id * (-1)); // ID ficará positivo, substitui cadastro exlcuido
-    printf("Usuario: %i\n", cad[j].id);
+    printf("Usuario: %i\n", cad[0].id);
     printf("Digite o nome:\n");
     fflush(stdin);
     gets(cad[0].nome);
@@ -210,28 +211,18 @@ void buscarEmail(struct cadastro *cad) {
     if ((i==j)&&(repetir!='N'))
       printf("Email invalido!\n");
     i++;
-  } while(i<=j);
+  } while(i<=j || strcmp(emailBusca,cad[i].email)==0);
   system("pause");
   system("cls");
 }
 
 void BuscarID(struct cadastro *cad){
-  int esquerda, direita, meio, idBusca, qtdCadastros, k, i, id_n_encontrado;
-  struct cadastro aux_cad;
-  qtdCadastros=j;
+  int esquerda, direita, meio, idBusca, id_n_encontrado;
+
   esquerda=0;
   direita=j;
 
-  for (k = 0; k < qtdCadastros-1; k++){
-    for (i = 0; i < qtdCadastros-1; i++){
-      if (cad[i].id > cad[i+1].id){
-
-        aux_cad = cad[i];
-        cad[i]= cad[i+1];
-        cad[i+1]= aux_cad;
-      }
-    }
-  }
+  ordenacao(cad);
 
   printf("Digite o ID para busca: \n");
   scanf("%d", &idBusca);
@@ -384,10 +375,8 @@ void editar(struct cadastro *cad){
 }
 
 void Excluir(struct cadastro *cad){
-  int idBusca, l=0, qtdCadastros, k, i, aux;
+  int idBusca, l=0;
   char auxS[10], msg_n_encontrado;
-  struct cadastro aux_cad;
-  qtdCadastros=j;
 
   printf("Digite o ID para excluir\n");
   fflush(stdin);
@@ -397,22 +386,11 @@ void Excluir(struct cadastro *cad){
     if (idBusca==cad[l].id) {
       cad[l].id = (cad[l].id * (-1)); // O ID ficará com numero negativo e vai ser alocado nos primeiros indices do vetor
       strcpy(cad[l].email,"Email excluido");
+      ordenacao(cad);
       msg_n_encontrado = 'n';
-
-      for (k = 0; k < qtdCadastros-1; k++){
-        for (i = 0; i < qtdCadastros-1; i++){
-          if (cad[i].id > cad[i+1].id){
-
-            aux_cad = cad[i];
-            cad[i]= cad[i+1];
-            cad[i+1]= aux_cad;
-
-          }
-        }
-      }
     }
   l++;
-} while(l <= qtdCadastros || idBusca == cad[l].id);
+} while(l <= j || idBusca == cad[l].id);
 
   switch (msg_n_encontrado) {
     case 'n':
@@ -460,18 +438,18 @@ char* validarEmail(char*emailValido){
   return emailValido;
 }
 
-int vacinaValidado(_Bool vacina){
+_Bool vacinaValidado(_Bool vacina){
   char vacinado[5], repetir;
   do {
-    printf("Ja vacinou?: (Sim ou Nao)\n");
+    printf("Ja vacinou? (Sim ou Nao)\n");
     fflush(stdin);
     gets(vacinado);
-    if ((strcmp(vacinado,"Sim")==0)||(strcmp(vacinado,"Nao")==0))
+    if ((stricmp(vacinado,"Sim")==0)||(stricmp(vacinado,"Nao")==0))
       repetir='n';
     else
       printf("Digite Sim ou Nao!\n");
   } while (repetir!='n');
-  vacina=(strcmp(vacinado,"Sim")==0);
+  vacina=(stricmp(vacinado,"Sim")==0);
   return vacina;
 }
 
@@ -489,4 +467,20 @@ double alturaValidada(double altura){
     }
   } while(repetir=='S');
   return altura;
+}
+
+void ordenacao(struct cadastro *cad){
+  struct cadastro aux_cad;
+  int k, i;
+  for (k = 0; k < j-1; k++){
+    for (i = 0; i < j-1; i++){
+      if (cad[i].id > cad[i+1].id){
+
+        aux_cad = cad[i];
+        cad[i]= cad[i+1];
+        cad[i+1]= aux_cad;
+
+      }
+    }
+  }
 }
