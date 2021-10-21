@@ -8,7 +8,7 @@ struct endereco {
 };
 
 struct cadastro{
-  char nome[30], email[15], sexo[15];
+  char nome[30], email[30], sexo[15];
   double altura;
   int id;
   _Bool vacina;
@@ -223,14 +223,12 @@ void buscarEmail(struct cadastro *cad) {
 void BuscarID(struct cadastro *cad){
   int esquerda, direita, meio, idBusca, id_n_encontrado;
 
-  esquerda=0;
-  direita=j;
-
   ordenacao(cad);
 
   printf("Digite o ID para busca: \n");
   scanf("%d", &idBusca);
-
+  esquerda=0;
+  direita=j;
   while(esquerda<=direita) {
    meio=(esquerda+direita)/2;
    if(cad[meio].id==idBusca){
