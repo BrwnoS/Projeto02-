@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-// faltam 7, 8
 
 struct endereco {
   char estado[30], cidade[30], rua[30], cep[30];
@@ -33,7 +32,7 @@ int j=0;
 
 int main() {
   int opcao, sair, qtdCadastros;
-  struct cadastro cad[10], cad_backup[10];
+  struct cadastro cad[1000], cad_backup[1000];
   do {
     Menu();
     fflush(stdin);
@@ -60,11 +59,16 @@ int main() {
     imprimir(cad);
     break;
     case 7:
-    cad_backup[j]=cad[j];
     qtdCadastros=j;
+    for(int i=0; i<j; i++){
+      cad_backup[i]=cad[i];
+    }
     break;
     case 8:
-    cad[qtdCadastros]=cad_backup[qtdCadastros];
+    for(int i=0; i<qtdCadastros; i++){
+      cad[i]=cad_backup[i];
+    }
+    j=qtdCadastros;
     break;
     }
   } while(j < 1000);
